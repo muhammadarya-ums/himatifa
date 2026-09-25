@@ -338,7 +338,15 @@ export default function EkrafStorePage() {
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-white p-3">
                       <div className="flex items-center gap-3">
-                        <div className="grid size-8 place-items-center rounded-lg bg-orange-100 text-orange-600 font-black text-[10px]">SEA</div>
+                        <div className="grid size-8 place-items-center rounded-lg bg-white">
+                            <Image 
+                                src="/seabank.png" 
+                                alt="Logo SeaBank" 
+                                width={28} 
+                                height={28} 
+                                className="object-contain" 
+                            />
+                            </div>
                         <div>
                           <p className="text-xs font-bold text-[#0a192f]">SeaBank</p>
                           <p className="text-[10px] font-semibold text-slate-500">0877 6272 8979</p>
@@ -348,7 +356,15 @@ export default function EkrafStorePage() {
                     </div>
                     <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-white p-3">
                       <div className="flex items-center gap-3">
-                        <div className="grid size-8 place-items-center rounded-lg bg-blue-100 text-blue-600 font-black text-[10px]">DANA</div>
+                        <div className="grid size-8 place-items-center rounded-lg bg-white">
+                        <Image 
+                            src="/dana.png" 
+                            alt="Logo DANA" 
+                            width={28} 
+                            height={28} 
+                            className="object-contain" 
+                        />
+                        </div>
                         <div>
                           <p className="text-xs font-bold text-[#0a192f]">DANA</p>
                           <p className="text-[10px] font-semibold text-slate-500">0877 6272 8979</p>
