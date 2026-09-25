@@ -80,6 +80,10 @@ export default function Page() {
       <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
   <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/70 bg-white/60 px-4 py-3 shadow-lg shadow-blue-900/5 backdrop-blur-xl sm:px-6">
     <a href="#beranda" className="flex items-center gap-2 font-black tracking-tight text-[#0a192f] transition-transform hover:scale-105">
+      {/* 
+        Fix: Mengembalikan ke /himatifa.png karena himatifabg.png 
+        memiliki background solid hitam yang menutupi desain.
+      */}
       <Image 
         src="/himatifa.png" 
         alt="Logo HIMATIFA UMSurabaya" 
@@ -96,8 +100,8 @@ export default function Page() {
       ))}
     </div>
     
-    {/* Gunakan komponen Link dari next/link dan arahkan ke /ekrafstore */}
-    <Link href="/ekrafstore" className="hidden rounded-full bg-[#2563eb] px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-transform hover:-translate-y-0.5 sm:block">
+    {/* Fix: Mengubah sm:block menjadi lg:flex agar konsisten dengan breakpoint menu mobile */}
+    <Link href="/ekrafstore" className="hidden items-center rounded-full bg-[#2563eb] px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-transform hover:-translate-y-0.5 lg:flex">
       Ekraf Store <ArrowUpRight className="ml-1 inline size-3.5" />
     </Link>
 
@@ -111,6 +115,16 @@ export default function Page() {
       {['Beranda', 'Profil', 'BPH', 'Departemen', 'Berita', 'Agenda'].map((item) => (
         <a onClick={() => setMobileOpen(false)} key={item} href={`#${item.toLowerCase()}`} className="font-semibold text-slate-700 hover:text-[#2563eb]">{item}</a>
       ))}
+      
+      {/* Fix: Menambahkan tombol Ekraf Store khusus untuk tampilan dropdown Mobile */}
+      <hr className="my-1 border-slate-200" />
+      <Link 
+        onClick={() => setMobileOpen(false)} 
+        href="/ekrafstore" 
+        className="flex items-center justify-center gap-2 rounded-xl bg-[#2563eb] py-3 text-sm font-bold text-white shadow-md shadow-blue-600/20 active:scale-95 transition-transform"
+      >
+        Ekraf Store <ArrowUpRight className="size-4" />
+      </Link>
     </div>
   )}
 </header>
