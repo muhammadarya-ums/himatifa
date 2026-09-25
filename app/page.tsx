@@ -20,8 +20,17 @@ import {
 } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
-const departments = {
+type DepartmentKey = 'PSDM' | 'Deplu' | 'Kepsos' | 'Ekraf' | 'Medkominfo'
+
+interface DepartmentDetail {
+  label: string
+  desc: string
+  programs: string[]
+}
+
+const departments: Record<DepartmentKey, DepartmentDetail> = {
   PSDM: { label: 'Pengembangan Sumber Daya Mahasiswa', desc: 'Membangun ekosistem belajar yang inklusif melalui pengembangan kapasitas, kompetensi, dan karakter mahasiswa Informatika.', programs: ['Study Club', 'Mentoring Akademik', 'Upgrading'] },
   Deplu: { label: 'Departemen Luar Negeri', desc: 'Membuka jejaring kolaborasi strategis antara HIMATIFA, organisasi mahasiswa, dan mitra profesional di luar kampus.', programs: ['Company Visit', 'Collaboration', 'Networking'] },
   Kepsos: { label: 'Kesejahteraan Sosial', desc: 'Menghadirkan dampak positif melalui aksi sosial dan kepedulian yang berkelanjutan bagi civitas dan masyarakat.', programs: ['HIMATIFA Care', 'Donasi Digital', 'Volunteer'] },
@@ -43,20 +52,17 @@ function GlassCard({ children, className = '' }: { children: React.ReactNode; cl
 }
 
 export default function Page() {
-  const [activeDepartment, setActiveDepartment] = useState<keyof typeof departments>('PSDM')
+  const [activeDepartment, setActiveDepartment] = useState<DepartmentKey>('PSDM')
   const [mobileOpen, setMobileOpen] = useState(false)
   const current = departments[activeDepartment]
 
-  // Setup Ref & Observer untuk fitur Autoplay Video
   const videoRef = useRef<HTMLVideoElement>(null)
   const isVideoInView = useInView(videoRef, { margin: "-100px" })
 
-  // Trigger Play/Pause saat element masuk/keluar dari viewport
   useEffect(() => {
     if (videoRef.current) {
       if (isVideoInView) {
-        // Promise catch ditambahkan untuk menghandle kebijakan strict autoplay browser
-        videoRef.current.play().catch((err) => console.log("Autoplay ditunda oleh browser:", err))
+        videoRef.current.play().catch((err: unknown) => console.log("Autoplay ditunda oleh browser:", err))
       } else {
         videoRef.current.pause()
       }
@@ -67,38 +73,49 @@ export default function Page() {
     <main className="min-h-screen overflow-hidden bg-[#f4f8fc] text-[#0a192f]">
       {/* Background Meshes */}
       <div className="absolute left-0 top-0 -z-10 h-full w-full overflow-hidden">
-        <div className="absolute -left-[10%] top-[-5%] h-[500px] w-[500px] rounded-full bg-blue-400/20 blur-[120px]" />
-        <div className="absolute right-[-5%] top-[20%] h-[600px] w-[600px] rounded-full bg-cyan-300/20 blur-[150px]" />
+        <div className="absolute left-[-10%] top-[-5%] h-125 w-125 rounded-full bg-blue-400/20 blur-[120px]" />
+        <div className="absolute right-[-5%] top-[20%] h-150 w-150 rounded-full bg-cyan-300/20 blur-[150px]" />
       </div>
 
       <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/70 bg-white/60 px-4 py-3 shadow-lg shadow-blue-900/5 backdrop-blur-xl sm:px-6">
-          <a href="#beranda" className="flex items-center gap-2 font-black tracking-tight text-[#0a192f] transition-transform hover:scale-105">
-            <Image 
-              src="/himatifa.png" 
-              alt="Logo HIMATIFA UMSurabaya" 
-              width={64} 
-              height={64} 
-              className="object-contain" 
-            />
-            HIMATIFA
-          </a>
-          <div className="hidden items-center gap-7 text-[13px] font-semibold text-slate-600 lg:flex">
-            {['Beranda', 'Profil', 'BPH', 'Departemen', 'Berita', 'Agenda'].map((item) => <a key={item} href={`#${item.toLowerCase()}`} className="transition-colors hover:text-[#2563eb]">{item}</a>)}
-          </div>
-          <a href="#ekraf" className="hidden rounded-full bg-[#2563eb] px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-transform hover:-translate-y-0.5 sm:block">Ekraf Store <ArrowUpRight className="ml-1 inline size-3.5" /></a>
-          <button aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'} onClick={() => setMobileOpen(!mobileOpen)} className="rounded-full p-2 lg:hidden">{mobileOpen ? <X /> : <Menu />}</button>
-        </nav>
-        {mobileOpen && (
-          <div className="mx-2 mt-2 flex flex-col gap-3 rounded-3xl border border-white/70 bg-white/90 p-5 shadow-xl backdrop-blur-xl lg:hidden">
-            {['Beranda', 'Profil', 'BPH', 'Departemen', 'Berita', 'Agenda'].map((item) => (
-              <a onClick={() => setMobileOpen(false)} key={item} href={`#${item.toLowerCase()}`} className="font-semibold text-slate-700 hover:text-[#2563eb]">{item}</a>
-            ))}
-          </div>
-        )}
-      </header>
+  <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/70 bg-white/60 px-4 py-3 shadow-lg shadow-blue-900/5 backdrop-blur-xl sm:px-6">
+    <a href="#beranda" className="flex items-center gap-2 font-black tracking-tight text-[#0a192f] transition-transform hover:scale-105">
+      <Image 
+        src="/himatifa.png" 
+        alt="Logo HIMATIFA UMSurabaya" 
+        width={64} 
+        height={64} 
+        className="object-contain" 
+      />
+      HIMATIFA
+    </a>
+    
+    <div className="hidden items-center gap-7 text-[13px] font-semibold text-slate-600 lg:flex">
+      {['Beranda', 'Profil', 'BPH', 'Departemen', 'Berita', 'Agenda'].map((item) => (
+        <a key={item} href={`#${item.toLowerCase()}`} className="transition-colors hover:text-[#2563eb]">{item}</a>
+      ))}
+    </div>
+    
+    {/* Gunakan komponen Link dari next/link dan arahkan ke /ekrafstore */}
+    <Link href="/ekrafstore" className="hidden rounded-full bg-[#2563eb] px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-transform hover:-translate-y-0.5 sm:block">
+      Ekraf Store <ArrowUpRight className="ml-1 inline size-3.5" />
+    </Link>
 
-      <section id="beranda" className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-14 px-6 pb-20 pt-36 lg:grid-cols-[1.05fr_.95fr] lg:px-10">
+    <button aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'} onClick={() => setMobileOpen(!mobileOpen)} className="rounded-full p-2 lg:hidden">
+      {mobileOpen ? <X /> : <Menu />}
+    </button>
+  </nav>
+
+  {mobileOpen && (
+    <div className="mx-2 mt-2 flex flex-col gap-3 rounded-3xl border border-white/70 bg-white/90 p-5 shadow-xl backdrop-blur-xl lg:hidden">
+      {['Beranda', 'Profil', 'BPH', 'Departemen', 'Berita', 'Agenda'].map((item) => (
+        <a onClick={() => setMobileOpen(false)} key={item} href={`#${item.toLowerCase()}`} className="font-semibold text-slate-700 hover:text-[#2563eb]">{item}</a>
+      ))}
+    </div>
+  )}
+</header>
+
+      <section id="beranda" className="relative mx-auto grid min-h-190 max-w-7xl items-center gap-14 px-6 pb-20 pt-36 lg:grid-cols-[1.05fr_.95fr] lg:px-10">
         <motion.div initial="hidden" animate="show" variants={reveal}>
           <h1 className="max-w-3xl text-5xl font-black leading-[1.02] tracking-[-0.055em] sm:text-7xl">Inovasi Tanpa Batas,<br /><span className="text-[#2563eb]">Sinergi S1 Informatika.</span></h1>
           <p className="mt-7 max-w-xl text-base leading-7 text-slate-500 sm:text-lg">Wadah kolaborasi mahasiswa Informatika Universitas Muhammadiyah Surabaya untuk mengasah kompetensi teknis dan berdaya saing global.</p>
@@ -107,14 +124,16 @@ export default function Page() {
             <a href="#agenda" className="rounded-full border border-slate-200 bg-white/50 px-6 py-3.5 text-sm font-bold text-slate-700 backdrop-blur transition-all hover:-translate-y-1 hover:border-blue-200 hover:text-[#2563eb]">Jelajahi Proker</a>
           </div>
           <div className="mt-12 flex items-center gap-4 text-sm text-slate-500">
-            <div className="flex -space-x-2">{people.slice(0, 3).map((p) => <img key={p.name} src={p.image} alt="Pengurus HIMATIFA" className="size-8 rounded-full border-2 border-white object-cover" />)}</div>
+            <div className="flex -space-x-2">
+              {people.slice(0, 3).map((p) => <img key={p.name} src={p.image} alt="Pengurus HIMATIFA" className="size-8 rounded-full border-2 border-white object-cover" />)}
+            </div>
             <span><strong className="text-[#0a192f]">500+</strong> mahasiswa bertumbuh bersama</span>
           </div>
         </motion.div>
-        <motion.div initial={{ opacity: 0, scale: .92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: .8, delay: .15 }} className="relative mx-auto w-full max-w-[500px]">
+        <motion.div initial={{ opacity: 0, scale: .92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: .8, delay: .15 }} className="relative mx-auto w-full max-w-125">
           <div className="absolute -left-10 top-16 size-24 rounded-full bg-cyan-300/30 blur-2xl" /><div className="absolute -right-4 bottom-0 size-32 rounded-full bg-blue-500/20 blur-3xl" />
           <div className="relative rotate-2 rounded-[2rem] border border-white/80 bg-white/50 p-3 shadow-2xl shadow-blue-900/10 backdrop-blur-xl">
-            <div className="overflow-hidden rounded-[1.5rem] bg-[#0d2442] p-5 text-white">
+            <div className="overflow-hidden rounded-2xl bg-[#0d2442] p-5 text-white">
               <div className="mb-10 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs font-bold">
                   <Image 
@@ -177,7 +196,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* NEW VIDEO SECTION */}
       <section id="video-profil" className="relative mx-auto max-w-7xl px-6 pb-24 lg:px-10">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={reveal}>
           <div className="mb-12 text-center">
@@ -186,24 +204,19 @@ export default function Page() {
           </div>
           <div className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-white/80 bg-white/40 p-3 shadow-2xl shadow-blue-900/10 backdrop-blur-xl">
             <div className="group relative aspect-video w-full overflow-hidden rounded-[1.8rem] bg-slate-900">
-               
-               {/* Implementasi Autoplay Video */}
-               <video 
-                 ref={videoRef}
-                 src="/oscar.mp4"
-                 loop
-                 playsInline
-                 className="size-full object-cover opacity-70 transition duration-700 group-hover:scale-105 group-hover:opacity-40" 
-               />
-               
-               {/* Overlay teks dimunculkan otomatis saat hover */}
-               <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                 <div>
-                   <h3 className="text-2xl font-bold">After Movie OSCAR 2026</h3>
-                   <p className="mt-1 text-sm text-blue-100/80">Dokumenter Perjalanan S1 Informatika UMSurabaya</p>
-                 </div>
-               </div>
-
+              <video 
+                ref={videoRef}
+                src="/oscar.mp4"
+                loop
+                playsInline
+                className="size-full object-cover opacity-70 transition duration-700 group-hover:scale-105 group-hover:opacity-40" 
+              />
+              <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div>
+                  <h3 className="text-2xl font-bold">After Movie OSCAR 2026</h3>
+                  <p className="mt-1 text-sm text-blue-100/80">Dokumenter Perjalanan S1 Informatika UMSurabaya</p>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -242,8 +255,8 @@ export default function Page() {
         </div>
         <div className="grid gap-5 lg:grid-cols-[.35fr_.65fr]">
           <div className="flex flex-col gap-2">
-            {Object.keys(departments).map((name) => (
-              <button key={name} onClick={() => setActiveDepartment(name as keyof typeof departments)} className={`group flex items-center justify-between rounded-2xl border-l-2 px-5 py-4 text-left text-sm font-bold transition-all ${activeDepartment === name ? 'border-[#2563eb] bg-white/70 text-[#2563eb] shadow-md' : 'border-transparent text-slate-500 hover:bg-white/50 hover:text-[#0a192f]'}`}>
+            {(Object.keys(departments) as DepartmentKey[]).map((name) => (
+              <button key={name} onClick={() => setActiveDepartment(name)} className={`group flex items-center justify-between rounded-2xl border-l-2 px-5 py-4 text-left text-sm font-bold transition-all ${activeDepartment === name ? 'border-[#2563eb] bg-white/70 text-[#2563eb] shadow-md' : 'border-transparent text-slate-500 hover:bg-white/50 hover:text-[#0a192f]'}`}>
                 <span>{name}</span>
                 <ChevronRight className={`size-4 transition-transform ${activeDepartment === name ? 'translate-x-1' : 'opacity-0 group-hover:opacity-100'}`} />
               </button>
@@ -262,7 +275,7 @@ export default function Page() {
                 </div>
                 <p className="max-w-2xl text-sm leading-7 text-slate-500">{current.desc}</p>
                 <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                  {current.programs.map((program) => (
+                  {current.programs.map((program: string) => (
                     <div key={program} className="rounded-2xl border border-slate-100 bg-white/60 p-4 text-sm font-bold shadow-sm"><span className="mb-4 block size-2 rounded-full bg-[#2563eb]" />{program}</div>
                   ))}
                 </div>
