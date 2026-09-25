@@ -85,7 +85,7 @@ export default function Page() {
         memiliki background solid hitam yang menutupi desain.
       */}
       <Image 
-        src="/himatifa.png" 
+        src="/himatifabg.png" 
         alt="Logo HIMATIFA UMSurabaya" 
         width={64} 
         height={64} 
